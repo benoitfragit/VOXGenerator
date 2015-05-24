@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Plugins>
+	<Plugin id="0" name="Open" reload="True">
+		<Command id="0" name="documents" transcription="ouvre mes documents" type="system" exec="ls"/>
+		<Command id="1" name="musiques"  transcription="ouvre ma musique" type="custom"/>
+		<Command id="2" name="images"    transcription="ouvre mes images" type="custom"/>
+	</Plugin>
+    <Plugin id="1" name="Action" reload="True">
+		<Command id="0" name="copier" transcription="copier ceci" type="system" exec="xdotool key ctrl+c"/>
+		<Command id="1" name="coller" transcription="coller ici"  type="system" exec="xdotool key ctrl+v"/>
+		<Command id="2" name="couper" transcription="couper ceci" type="system" exec="xdotool key ctrl+x"/>
+	</Plugin>
+</Plugins>
