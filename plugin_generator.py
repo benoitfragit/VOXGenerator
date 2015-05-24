@@ -36,6 +36,8 @@ class PluginGenerator(Generator):
         self.__put__("import os")
         self.__put__("from plugin import Plugin")
         
+        self.__addPackageInclusion__(plugin)
+        
         self.__put__("class " + self.__name__ + "(Plugin):")
         self.__right__()
         self.__put__("def __init__(self):")
@@ -53,6 +55,20 @@ class PluginGenerator(Generator):
         self.__addcommandfunction__(commands)
         self.__left__()
     
+    
+    def __addPackageInclusion__(self, plugin):
+        packages = plugin.findall("package")
+        
+        for package in packages:
+            name = package.get("name")
+            module = package.get("module")
+            
+            if name is not None and module is not None:
+                self.__put__("from " + name + " import " + module)
+            else:
+                if name is not None and module is None:
+                    self.__put__("import " + name)
+            
     def __addfunctionlookup__(self, commands):        
         for cmd in commands:
             id      = cmd.get("id")
@@ -77,9 +93,12 @@ class PluginGenerator(Generator):
             type    = cmd.get("type")
             self.__put__("def " + name + "(self):")
             self.__right__()
-            if type == "system":
-                exe = cmd.get("exec")
-                self.__put__("os.system('" + exe +"')")
+            exe = cmd.get("exec")
+            if exe is not None:
+                if type == "system":
+                    self.__put__("os.system('" + exe +"')")
+                else:
+                    self.__put__(exe)
             else:
                 self.__put__("print 'not yet implemented'")
             

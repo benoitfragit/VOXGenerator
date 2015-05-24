@@ -44,17 +44,18 @@ class Pipeline:
         asr.post_message(gst.message_new_application(asr, struct))
 
     def __onmessage__(self, bus, msg):
+        msgtype = msg.structure.get_name()
         if msgtype == 'result':
             self.__onfinalresult__(msg.structure['hyp'], msg.structure['uttid'])
 
     def __onfinalresult__(self, hyp, uttid):
         self.__process__(hyp, uttid)
 
-	def __process__(self, hyp, uttid):
-		raise NotImplementedError('subclasses must override __process__()!')
+    def __process__(self, hyp, uttid):
+        raise NotImplementedError('subclasses must override __process__()!')
 
-	def __send_text__(self, hyp, uttid):
-		print hyp + " is going to be sent to the manager/n"
+    def __send_text__(self, hyp, uttid):
+        print hyp + " is going to be sent to the manager/n"
 
 if __name__ == '__main__':
     p = Pipeline(0, 'sphinx/hmm', 'sphinx/dictionnary.dic', 'sphinx/model.lm.dmp')

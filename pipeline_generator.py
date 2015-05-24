@@ -64,10 +64,19 @@ class PipelineGenerator(Generator):
         self.__id__  = self.__plugins__[plugin]
         self.__hmm__ = pipeline.get("hmm")
         self.__dic__ = pipeline.get("dic")
-        self.__lm__  = plugin + ".lm.dmp" 
+        self.__lm__  = "lm/" + plugin + ".lm.dmp" 
         self.__name__ = plugin + "VoicePipeline"
 
-        if (not os.path.isfile(self.__dic__)) or (not os.path.isdir(self.__hmm__)):
+        if not os.path.isfile(self.__dic__):
+            print 'Sphinx dictionnary ' + self.__dic__ + " does not exist !"
+            return False
+    
+        if not os.path.isdir(self.__hmm__):
+            print 'Sphinx hmm ' + self.__hmm__ + 'does not exist !'
+            return False
+    
+        if not os.path.isfile(self.__lm__):
+            print 'Sphinx lm file ' + self.__lm__ + 'does not exist !'
             return False
 
         pipeline_str_name = plugin + "_pipeline.py"
@@ -144,7 +153,7 @@ class PipelineGenerator(Generator):
                 sentence += " and self.__activate_on_mouse__()"
 
         
-        self.__put__("def __update_activation__(self):")
+        self.__put__("def __updateactivation__(self):")
         self.__right__()
         self.__put__("self.__active__ = " + sentence)
         self.__left__()
@@ -158,6 +167,7 @@ class PipelineGenerator(Generator):
         self.__put__("")
         self.__put__("def __process__(self, hyp, uttid):")
         self.__right__()
+        self.__put__("print hyp")
         self.__put__("self.__updateactivation__()")
         self.__put__("if self.__active__ == True:")
         self.__right__()
