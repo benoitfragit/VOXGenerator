@@ -1,29 +1,55 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from selector import Selector
+
 import os
 import gobject
 import pygst
 pygst.require('0.10')
 gobject.threads_init()
 import gst
+import os, sys
+from lxml import etree
 
-class Pipeline:
-    def __init__(self, id, hmm, dic, lm):
-        self.__id__ = id
+class Pipeline(Selector):
+    def __init__(self, xml):
+        Selector.__init__(self, xml)
+        
+        pipeline_tree = etree.parse(xml)
+        dics = pipeline_tree.xpath("/pipelines/dic")
+        hmms = pipeline_tree.xpath("/pipelines/hmm")
+    
+        dic_file = ""
+        for dic in dics:
+            f = dic.get("file")
+            if f is not None:
+                dic_file = f
+
+        hmm_file = ""
+        for hmm in hmms:
+            f = hmm.get("file")
+            if f is not None:
+                hmm_file = f
+                
+		print hmm_file, dic_file
+    
         self.__pipeline__ = gst.parse_launch('gsettingsaudiosrc ! audioconvert ! audioresample '
                                         + '! vader name=vad auto_threshold=true '
                                         + '! pocketsphinx name=asr ! fakesink')
                                         
-        self.__hmm__ = hmm
-        self.__dic__ = dic
-        self.__lm__ = lm
+        self.__hmm__   = hmm_file
+        self.__dic__   = dic_file
+        self.__lm__    = self.__getactivatedlm__("")
+        self.__lmctl__ = "lm/lmctl.txt"
         self.__loop__ = gobject.MainLoop()
+        self.__previoushyp__ = ""
         
         asr = self.__pipeline__.get_by_name('asr')
         asr.set_property('hmm', hmm)
         asr.set_property('dict', dic)
-        asr.set_property('lm', lm)
+        asr.set_property('lmctl', self.__lmctl__)
+        asr.set_property("lmname", self.__lm__)
         asr.connect('result', self.__onresult__)
         
         bus = self.__pipeline__.get_bus()
@@ -32,12 +58,22 @@ class Pipeline:
                 
     def __play__(self):
         self.__pipeline__.set_state(gst.STATE_PLAYING)
-        self.__loop__.run()
+        context = self.__loop__.run()
+        
+        while True:
+            """ use a selector to change the language model """
+            lm = self.__getactivatedlm__(self.__previoushyp__)
+
+            if lm is not self.__lm__:
+                asr = self.__pipeline__.get_by_name('asr')
+                asr.set_property('lmname', lm)  
+            
+            context.iteration(True)
 
     def __pause__(self):
         self.__pipeline__.set_state(gst.STATE_PAUSED)       
 
-    def __onresult__(self, asr, text, uttid):
+    def __onresult__(self, asr, text, uttid):        
         struct = gst.Structure('result')
         struct.set_value('hyp', text)
         struct.set_value('uttid', uttid)
@@ -52,11 +88,13 @@ class Pipeline:
         self.__process__(hyp, uttid)
 
     def __process__(self, hyp, uttid):
-        raise NotImplementedError('subclasses must override __process__()!')
+        print hyp
+        self.__previoushyp__ = hyp
+        """self.__send_text__(hyp)"""
 
-    def __send_text__(self, hyp, uttid):
+    def __send_text__(self, hyp):
         print hyp + " is going to be sent to the manager/n"
 
 if __name__ == '__main__':
-    p = Pipeline(0, 'sphinx/hmm', 'sphinx/dictionnary.dic', 'sphinx/model.lm.dmp')
+    p = Pipeline("pipeline.xml")
     p.__play__()

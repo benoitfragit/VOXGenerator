@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
-<Pipelines>
-	<Include file="plugin.xml"/>
-	<Pipeline plugin="Open" hmm="sphinx/hmm" dic="sphinx/dictionnary.dic">
+<pipelines>
+	<dic     file="sphinx/dictionnary.dic"/>
+	<hmm     file="sphinx/hmm"/>
+	<include file="plugin.xml"/>
+	<pipeline priority="0" plugin="Open">
 		<activation window="chrome"/>
 		<activation mouse="True">
 			<x start="100" end="200"/>
 			<y start="100" end="200"/>
 	    </activation>
 	    <activation keyword="Jasper"/>
-    </Pipeline>
-</Pipelines>
+    </pipeline>
+   	<pipeline default="True" priority="1" plugin="Action"/>
+</pipelines>

@@ -12,7 +12,7 @@ class PluginGenerator(Generator):
         
         if os.path.isfile(xml):
             plugin_tree = etree.parse(xml)
-            plugins = plugin_tree.xpath("/Plugins/Plugin")
+            plugins = plugin_tree.xpath("/plugins/plugin")
             
             for plugin in plugins:
                 self.__generate_plugin__(plugin)
@@ -47,15 +47,14 @@ class PluginGenerator(Generator):
         self.__put__("self.__name__ = '" + self.__name__ + "'\n")  
 
     def __generate_body__(self, plugin):
-        commands = plugin.findall("Command")            
+        commands = plugin.findall("command")            
         self.__addfunctionlookup__(commands)
         self.__addcommandlookup__(commands)
         self.__put__("self.__build__('" + self.__name__ + "'" + ", " + self.__reload__ + ")")
         self.__left__()
         self.__addcommandfunction__(commands)
         self.__left__()
-    
-    
+        
     def __addPackageInclusion__(self, plugin):
         packages = plugin.findall("package")
         

@@ -11,10 +11,12 @@ class ModelGenerator:
         
         if os.path.isfile(xml):
             plugin_tree = etree.parse(xml)
-            plugins = plugin_tree.xpath("/Plugins/Plugin")
+            plugins = plugin_tree.xpath("/plugins/plugin")
+
+            lmctl = open("lm/lmctl.txt", "w")
             
             for plugin in plugins:
-                commands = plugin.findall("Command") 
+                commands = plugin.findall("command") 
                 name = plugin.get("name")
                 filepath = "lm/" + name + "_raw.txt"
                 f = open(filepath, "w")
@@ -29,6 +31,9 @@ class ModelGenerator:
                 f.close()
                 
                 self.__buildmodel__(name, filepath)
+                lmctl.write(filepath + " " + name + "\n")
+            
+            lmctl.close()
         else:
             print "XML plugin file " + xml + " is not valid !"
 
