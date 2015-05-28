@@ -11,12 +11,13 @@ class PluginGenerator(Generator, Checksum):
     def __init__(self, xml):    
         Generator.__init__(self)
         
-        if os.path.isfile(xml)and self.__haschanged__(xml):
-            plugin_tree = etree.parse(xml)
-            plugins = plugin_tree.xpath("/plugins/plugin")
+        if os.path.isfile(xml):
+            if self.__haschanged__(xml):
+                plugin_tree = etree.parse(xml)
+                plugins = plugin_tree.xpath("/plugins/plugin")
             
-            for plugin in plugins:
-                self.__generate_plugin__(plugin)
+                for plugin in plugins:
+                    self.__generate_plugin__(plugin)
         else:
             print "XML file: " + xml + "  not valid !"
     

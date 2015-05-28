@@ -4,9 +4,9 @@
 import os, sys
 from lxml import etree
 from xlib_utils import XlibUtils
+from plugin_generator import PlugineGenerator
 
 class Selector:
-    def __init__(self, xml):
         self.__display__ = XlibUtils()
         
         self.__priority__  = {}
@@ -23,6 +23,7 @@ class Selector:
     def __getvalidpluginnames__(self, include):
         for f in include:
             plugin_xml = f.get("file")
+            plugin_generator = PluginGenerator(plugin_xml)
 
             if os.path.isfile(plugin_xml):
                 plugin_tree = etree.parse(plugin_xml)
