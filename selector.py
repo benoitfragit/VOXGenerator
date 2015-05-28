@@ -4,7 +4,7 @@
 import os, sys
 from lxml import etree
 from xlib_utils import XlibUtils
-from plugin_generator import PlugineGenerator
+from plugin_generator import PluginGenerator
 
 class Selector:
         self.__display__ = XlibUtils()
