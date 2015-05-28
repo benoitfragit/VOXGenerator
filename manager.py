@@ -23,12 +23,12 @@ class Manager(Receiver, Sender):
                 if   action == "register":
                     self.__registered__.append(id)
                     print "Id " + str(id) + " has been registered !"
-                elif action == "result"
-                    if id is in self.__registered__:
+                elif action == "result":
+                    if id in self.__registered__:
                         result = fields[2]
                         self.__publish__(id, hyp)
                 elif action == "acknowledge":
-                    if id is in self.__registered__:
+                    if id in self.__registered__:
                         score = fields[3]
                         self.__acknowledge__[id] = score
                     

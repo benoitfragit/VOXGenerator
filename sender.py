@@ -20,9 +20,9 @@ class Sender:
 
     """ the manager publish the result to all plugins """
     def __publish__(self, id, hyp):
-        self.__sock__.sendto(str(id) + ":publish:" + hyp, (self.__ip__, self.__port__)
+        self.__sock__.sendto(str(id) + ":publish:" + hyp, (self.__ip__, self.__port__))
     
-    """ all plugins send an acknowledge with a score"""
+    """ all plugins send an acknowledge with a score """
     def __acknowledge__(self, id, hyp, score):
         self.__sock__.sendto(str(id) + ":acknowledge:" + hyp + ":" + str(score), (self.__ip__, self.__port__))
     
