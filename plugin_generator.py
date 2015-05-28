@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from generator import Generator
+from checsum import Checksum
 import sys
 from lxml import etree
 import os.path
 
-class PluginGenerator(Generator):
+class PluginGenerator(Generator, Checksum):
     def __init__(self, xml):    
         Generator.__init__(self)
         
-        if os.path.isfile(xml):
+        if os.path.isfile(xml)and self.__haschanged__(xml):
             plugin_tree = etree.parse(xml)
             plugins = plugin_tree.xpath("/plugins/plugin")
             

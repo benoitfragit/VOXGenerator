@@ -27,9 +27,9 @@ class Checksum:
             checksum   = self.__computemd5checksum__(f)
             
             if first_line == str(checksum):
-                return True
+                return False
         
-        return False
+        return True
     
     def __computemd5checksum__(self, f):
         hasher = hashlib.md5() 
