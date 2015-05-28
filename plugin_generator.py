@@ -2,35 +2,35 @@
 # -*- coding: utf-8 -*-
 
 from generator import Generator
-from checsum import Checksum
+
 import sys
 from lxml import etree
 import os.path
 
-class PluginGenerator(Generator, Checksum):
+class PluginGenerator(Generator):
     def __init__(self, xml):    
         Generator.__init__(self)
         
         if os.path.isfile(xml):
-            if self.__haschanged__(xml):
-                plugin_tree = etree.parse(xml)
-                plugins = plugin_tree.xpath("/plugins/plugin")
+            plugin_tree = etree.parse(xml)
+            plugins = plugin_tree.xpath("/plugins/plugin")
             
-                for plugin in plugins:
-                    self.__generate_plugin__(plugin)
+            for plugin in plugins:
+                self.__generate_plugin__(plugin, xml)
         else:
             print "XML file: " + xml + "  not valid !"
     
-    def __generate_plugin__(self, plugin):
-        self.__generate_base__(plugin)
+    def __generate_plugin__(self, plugin, xml):
+        self.__generate_base__(plugin, xml)
         self.__generate_body__(plugin)
         self.__generate_close__()
     
-    def __generate_base__(self, plugin):
+    def __generate_base__(self, plugin, xml):
         self.__id__     = plugin.get("id")
         self.__name__   = plugin.get("name")
         self.__reload__ = plugin.get("reload")
-        plugin_str_name = self.__name__ + ".py"
+        base = os.path.dirname(xml)
+        plugin_str_name = base + "/" + self.__name__ + ".py"
         
         self.__f__ = open(plugin_str_name, 'w')
         self.__put__("#!/usr/bin/env python\n# -*- coding: utf-8 -*-")

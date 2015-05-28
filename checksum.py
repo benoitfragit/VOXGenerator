@@ -8,7 +8,7 @@ class Checksum:
     def __haschanged__(self, f):
         checksum_file = f.split('.')[0] + ".md5"
         
-        result = False
+        result = True
         if os.path.exists(checksum_file):
             result = self.__comparechecksum__(checksum_file, f)
         
@@ -21,7 +21,7 @@ class Checksum:
                 
     def __comparechecksum__(self, checksum_file, f):
         first_line = ''
-        
+               
         with open(checksum_file, 'r') as md5file:
             first_line = md5file.readline()
             checksum   = self.__computemd5checksum__(f)
