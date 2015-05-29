@@ -7,6 +7,6 @@ from plugin           import Plugin
 from plugin_generator import PluginGenerator
 from pipeline         import Pipeline
 from model_generator  import ModelGenerator
-from manager          import Manager
 from command_selector import FuzzySelector
 from checksum         import Checksum
+from activation       import *

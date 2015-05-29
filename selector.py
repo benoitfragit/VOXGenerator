@@ -3,25 +3,21 @@
 
 import os, sys
 from lxml import etree
-from xlib_utils import XlibUtils
 from plugin_generator import PluginGenerator
 from model_generator import ModelGenerator
 from checksum import Checksum
+from activation import *
 
 class Selector:
-    def __init__(self, xml):
-        self.__display__ = XlibUtils()
-        
+    def __init__(self, xml):        
         self.__priority__  = {}
         self.__plugins__   = {}
-        self.__windows__   = {}
-        self.__keywords__  = {}
-        self.__areas__     = {}
         self.__current_model_id__ = -1
         self.__lmctl__ = ""
         self.__default__ = ""
+        self.__activations__ = {}
         self.__build__(xml)
-
+        
     def __getvalidpluginnames__(self, include):
         for f in include:
             plugin_xml = f.get("file")
@@ -61,6 +57,7 @@ class Selector:
             if self.__plugins__.has_key(plugin):
                 id = self.__plugins__[plugin]
                 self.__priority__[priority] = id 
+                self.__activations__[id] = []
 
                 self.__parseactivation__(id, pipeline)
                 
@@ -76,44 +73,35 @@ class Selector:
         for active in activations:            
             window = active.get("window") 
             if window is not None:
-                self.__windows__[id] = window;
+                self.__activations__[id].append(WindowActivation(window))
             
             if active.get("mouse") is "True":
                 x = active.find("x")
                 y = active.find("y")
-                self.__areas__[id] = [int(x.get("start")), int(x.get("end")), int(y.get("start")), int(y.get("end"))]
-            
+                self.__activations__[id].append(MouseActivation([int(x.get("start")), 
+                                                                 int(x.get("end")),
+                                                                 int(y.get("start")),
+                                                                 int(y.get("end"))]))
+    
             keyword = active.get("keyword")
             if keyword is not None:
-                self.__keywords__[id] = keyword
+                self.__activations__[id].append(KeywordActivation(keyword))
 
-    def __updateactivations__(self, hyp):
-        window = self.__display__.__compute_active_window__() 
-        x, y = self.__display__.__compute_mouse_position__()
-        
+    def __updateactivations__(self, hyp):        
         sorted_priority = sorted(self.__priority__, key=self.__priority__.__getitem__) 
         
         for id in sorted_priority:
-            if id in self.__windows__ and self.__windows__[id] == window:
-                self.__current_model_id__ = id
-                break
-        
-            if id in self.__keywords__ and hyp == self.__keywords__[id]:
-                self.__current_model_id__ = id
-                break
-
-            if id in self.__areas__:
-                area = self.__areas__[id]
-            
-                if area[0] <= x and x <= area[1] and area[2] <= y and y <= area[3]:
+            for activation in self.__activations__[id]:
+                if activation.__isactive__(hyp):
                     self.__current_model_id__ = id
-                    break
-
+                    return
+                
     def __getactivatedlm__(self, hyp):
         self.__updateactivations__(hyp)
         
         for lm in self.__plugins__:
             if self.__plugins__[lm] == self.__current_model_id__:
+                print "lm: ", lm
                 return lm
         
         return self.__default__

@@ -44,7 +44,7 @@ class Pipeline(Selector):
                 
     def __play__(self):
         self.__pipeline__.set_state(gst.STATE_PLAYING)
-        context = self.__loop__.run()
+        context = self.__loop__.get_context()
         
         while True:
             """ use a selector to change the language model """
