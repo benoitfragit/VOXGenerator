@@ -88,8 +88,9 @@ class Selector:
                 self.__activations__[id].append(KeywordActivation(keyword))
 
     def __updateactivations__(self, hyp):        
-        sorted_priority = sorted(self.__priority__, key=self.__priority__.__getitem__) 
+        sorted_priority = list(reversed(sorted(self.__priority__, key=self.__priority__.__getitem__))) 
         
+        self.__current_model_id__ = -1
         for id in sorted_priority:
             for activation in self.__activations__[id]:
                 if activation.__isactive__(hyp):

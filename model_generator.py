@@ -6,6 +6,8 @@ from lxml import etree
 
 class ModelGenerator:
     def __init__(self, xml, lms):
+        base = os.path.dirname(lms)
+        
         if not os.path.isdir('lm'):
             os.mkdir('lm')
         
@@ -14,8 +16,7 @@ class ModelGenerator:
             plugins = plugin_tree.xpath("/plugins/plugin")
 
             lmctl = open(lms, "w")
-            base = os.path.dirname(lms)
-            
+
             for plugin in plugins:
                 commands = plugin.findall("command") 
                 name = plugin.get("name")
@@ -33,15 +34,15 @@ class ModelGenerator:
                 
                 f.close()
                 
-                self.__buildmodel__(name, filepath)
+                self.__buildmodel__(base, name, filepath)
                 lmctl.write(modelpath + " " + name + "\n")
             
             lmctl.close()
         else:
             print "XML plugin file " + xml + " is not valid !"
 
-    def __buildmodel__(self, name, tmpfile):
-        base = "lm/" + name
+    def __buildmodel__(self, b, name, tmpfile):
+        base = b + "/" + name
         vocab = base + '.vocab'
         idngram = base + '.idngram'
         arpa = base + '.arpa'
