@@ -11,23 +11,21 @@ gobject.threads_init()
 import gst
 import os, sys
 from lxml import etree
-from agent import ControllerAgent
-from agent import PipelineAgent
-from agent import ControllerAgent
+from sender import Sender
 
-
-class Pipeline(Selector, PipelineAgent, ControllerAgent):
+class Pipeline(Selector):
     def __init__(self, xml):
         Selector.__init__(self, xml)
-        PipelineAgent.__init__(self)
-        ControllerAgent.__init__(self)
-                
+        self.__clients__ = {}
+
         pipeline_tree = etree.parse(xml)
         root = pipeline_tree.xpath("/pipelines")
+
+        self.__loadclientadress__(root[0])
                 
         self.__dic__ = root[0].find("dic").get("file")
         self.__hmm__ = root[0].find("hmm").get("file")
-                       
+
         self.__pipeline__ = gst.parse_launch('gsettingsaudiosrc ! audioconvert ! audioresample '
                                         + '! vader name=vad auto_threshold=true '
                                         + '! pocketsphinx name=asr ! fakesink')
@@ -48,9 +46,17 @@ class Pipeline(Selector, PipelineAgent, ControllerAgent):
         bus = self.__pipeline__.get_bus()
         bus.add_signal_watch()
         bus.connect('message::application', self.__onmessage__)
-        
-        self.__register__("Pipeline")
                 
+    def __loadclientadress__(self, root):
+        pipelines = root.findall("pipeline")
+        for pipe in pipelines:
+            name = pipe.get("plugin")
+            ip   = pipe.get("ip")
+            port = pipe.get("port")
+            
+            if self.__plugins__.has_key(name) and ip is not None and port is not None:
+                self.__clients__[name] = Sender(ip, int(port))
+    
     def __play__(self):
         self.__pipeline__.set_state(gst.STATE_PLAYING)
         context = self.__loop__.get_context()
@@ -83,9 +89,8 @@ class Pipeline(Selector, PipelineAgent, ControllerAgent):
         self.__process__(hyp, uttid)
 
     def __process__(self, hyp, uttid):
-        print hyp
         self.__previoushyp__ = hyp
-        self.__result__(self.__lm__, hyp)
+        self.__clients___[self.__lm__].__send__(self.__lm__  + "::" + hyp)
 
 if __name__ == '__main__':
     p = Pipeline("pipeline.xml")
