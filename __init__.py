@@ -10,3 +10,4 @@ from model_generator  import ModelGenerator
 from command_selector import FuzzySelector
 from checksum         import Checksum
 from activation       import *
+from agent            import *

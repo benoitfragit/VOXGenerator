@@ -36,7 +36,7 @@ class PluginGenerator(Generator):
         self.__put__("#!/usr/bin/env python\n# -*- coding: utf-8 -*-")
         self.__put__("")
         self.__put__("import os")
-        self.__put__("from plugin import Plugin")
+        self.__put__("from voxgenerator import Plugin")
         
         self.__addPackageInclusion__(plugin)
         
@@ -101,7 +101,7 @@ class PluginGenerator(Generator):
                 else:
                     self.__put__(exe)
             else:
-                self.__put__("print 'not yet implemented'")
+                self.__put__("raise NotImplementedError('subclasses must override " + name + "()!')")
             
             self.__left__()
     

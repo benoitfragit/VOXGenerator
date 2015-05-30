@@ -3,9 +3,11 @@
 
 import os
 from command_selector import FuzzySelector
+from agent import PluginAgent
 
-class Plugin:
+class Plugin(PluginAgent):
     def __init__(self):
+        PluginAgent.__init__(self)
         self.__selector__ = FuzzySelector()
         self.__function__ = {}
         self.__command__  = {}

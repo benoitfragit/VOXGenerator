@@ -11,16 +11,23 @@ gobject.threads_init()
 import gst
 import os, sys
 from lxml import etree
+from agent import ControllerAgent
+from agent import PipelineAgent
+from agent import ControllerAgent
 
-class Pipeline(Selector):
+
+class Pipeline(Selector, PipelineAgent, ControllerAgent):
     def __init__(self, xml):
         Selector.__init__(self, xml)
-        
+        PipelineAgent.__init__(self)
+        ControllerAgent.__init__(self)
+                
         pipeline_tree = etree.parse(xml)
         root = pipeline_tree.xpath("/pipelines")
+                
         self.__dic__ = root[0].find("dic").get("file")
         self.__hmm__ = root[0].find("hmm").get("file")
-        
+                       
         self.__pipeline__ = gst.parse_launch('gsettingsaudiosrc ! audioconvert ! audioresample '
                                         + '! vader name=vad auto_threshold=true '
                                         + '! pocketsphinx name=asr ! fakesink')
@@ -41,6 +48,8 @@ class Pipeline(Selector):
         bus = self.__pipeline__.get_bus()
         bus.add_signal_watch()
         bus.connect('message::application', self.__onmessage__)
+        
+        self.__register__("Pipeline")
                 
     def __play__(self):
         self.__pipeline__.set_state(gst.STATE_PLAYING)
@@ -76,10 +85,7 @@ class Pipeline(Selector):
     def __process__(self, hyp, uttid):
         print hyp
         self.__previoushyp__ = hyp
-        """self.__send_text__(hyp)"""
-
-    def __send_text__(self, hyp):
-        print hyp + " is going to be sent to the manager/n"
+        self.__result__(self.__lm__, hyp)
 
 if __name__ == '__main__':
     p = Pipeline("pipeline.xml")
