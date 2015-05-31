@@ -75,7 +75,7 @@ class Selector:
             if window is not None:
                 self.__activations__[id].append(WindowActivation(window))
             
-            if active.get("mouse") is "True":
+            if active.get("mouse") == "True":
                 x = active.find("x")
                 y = active.find("y")
                 self.__activations__[id].append(MouseActivation([int(x.get("start")), 
@@ -94,6 +94,7 @@ class Selector:
         for id in sorted_priority:
             for activation in self.__activations__[id]:
                 if activation.__isactive__(hyp):
+                    print "active ", str(id)
                     self.__current_model_id__ = id
                     return
                 

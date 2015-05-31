@@ -10,6 +10,7 @@ class Receiver:
         self.__port__ = port
         self.__sock__ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        
         self.__sock__.bind((self.__ip__, self.__port__))
+        self.__sock__.listen(1)
 
     def __receive__(self):
         raise NotImplementedError('subclasses must override __receive__()!')

@@ -68,6 +68,7 @@ class Pipeline(Selector):
             if lm is not self.__lm__:
                 asr = self.__pipeline__.get_by_name('asr')
                 asr.set_property('lmname', lm)  
+                self.__lm__ = lm
             
             context.iteration(True)
 
@@ -90,7 +91,7 @@ class Pipeline(Selector):
 
     def __process__(self, hyp, uttid):
         self.__previoushyp__ = hyp
-        self.__clients___[self.__lm__].__send__(self.__lm__  + "::" + hyp)
+        self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
 
 if __name__ == '__main__':
     p = Pipeline("pipeline.xml")

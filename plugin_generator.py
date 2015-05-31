@@ -29,6 +29,9 @@ class PluginGenerator(Generator):
         self.__id__     = plugin.get("id")
         self.__name__   = plugin.get("name")
         self.__reload__ = plugin.get("reload")
+        self.__ip__     = plugin.get("ip")
+        self.__port__   = plugin.get("port")
+        
         base = os.path.dirname(xml)
         plugin_str_name = base + "/" + self.__name__ + ".py"
         
@@ -44,7 +47,7 @@ class PluginGenerator(Generator):
         self.__right__()
         self.__put__("def __init__(self):")
         self.__right__()
-        self.__put__("Plugin.__init__(self)")
+        self.__put__("Plugin.__init__(self, '" + self.__ip__ + "', " + self.__port__ + ")")
         self.__put__("self.__id__ = " + self.__id__)
         self.__put__("self.__name__ = '" + self.__name__ + "'\n")  
 
@@ -53,8 +56,10 @@ class PluginGenerator(Generator):
         self.__addfunctionlookup__(commands)
         self.__addcommandlookup__(commands)
         self.__put__("self.__build__('" + self.__name__ + "'" + ", " + self.__reload__ + ")")
+        self.__put__("self.__receive__()")
         self.__left__()
         self.__addcommandfunction__(commands)
+        self.__addprocessfunction__()
         self.__left__()
         
     def __addPackageInclusion__(self, plugin):
@@ -70,26 +75,29 @@ class PluginGenerator(Generator):
                 if name is not None and module is None:
                     self.__put__("import " + name)
             
-    def __addfunctionlookup__(self, commands):        
+    def __addfunctionlookup__(self, commands):
+        id = 0        
         for cmd in commands:
-            id      = cmd.get("id")
             name    = cmd.get("name")
-            self.__put__("self.__function__[" + id + "] = self." + name)
+            self.__put__("self.__function__[" + str(id) + "] = self." + name)
+            id += 1
             
         self.__put__("")
 
     def __addcommandlookup__(self, commands):
+        id = 0
         for cmd in commands:
-            id      = cmd.get("id")
             trans   = cmd.get("transcription")
-            self.__put__("self.__command__[" + id + "] = '" + trans + "'")
+            self.__put__("self.__command__[" + str(id) + "] = '" + trans + "'")
+            id += 1
 
         self.__put__("")
 
     def __addcommandfunction__(self, commands):
+        id = 0
         for cmd in commands:
+            id += 1
             self.__put__("")
-            id      = cmd.get("id")
             name    = cmd.get("name")
             type    = cmd.get("type")
             self.__put__("def " + name + "(self):")
@@ -104,6 +112,21 @@ class PluginGenerator(Generator):
                 self.__put__("raise NotImplementedError('subclasses must override " + name + "()!')")
             
             self.__left__()
+    
+    def __addprocessfunction__(self):
+        self.__put__("")
+        self.__put__("def __process__(self, name, hyp):")
+        self.__right__()
+        self.__put__("if self.__name__ == name:")
+        self.__right__()
+        self.__put__("print 'Plugin ' + name + " + "' receive : '+ hyp")
+        self.__put__("idx = self.__selector__.__query__(hyp)")
+        self.__put__("if self.__function__.has_key(idx):")
+        self.__right__()
+        self.__put__("self.__function__[idx]()")
+        self.__left__()
+        self.__left__()
+        self.__left__()
     
 if __name__ == '__main__':
     plugin_generator = PluginGenerator(sys.argv[1])
