@@ -120,3 +120,7 @@ The pipeline should be describe in a xml file like this:
 ```
 
 Each pipeline is going to work with one plugin.  A langage model controller make it easy to switch between plugin thanks to activation. The activated pipeline with the highest priority is going to send text to its associated plugin.
+
+Be sure to include the file containing the list of available plugins descriptions.
+
+When you launch a Pipeline then a versioning system is going to launch a plugin generation, langage model generation and a langage control file generation so that user as nothing else to do than launching a pipeline.
