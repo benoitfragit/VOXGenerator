@@ -56,7 +56,7 @@ class Selector:
         
             if self.__plugins__.has_key(plugin):
                 id = self.__plugins__[plugin]
-                self.__priority__[priority] = id 
+                self.__priority__[id] = priority
                 self.__activations__[id] = []
 
                 self.__parseactivation__(id, pipeline)
