@@ -5,5 +5,5 @@ setup(
     version = '1.0.0',
     description = 'Vox generator',
     author = 'Benoit Franquet',
-    author_email = 'benoitfranquet@gmail.com'
+    author_email = 'benoitfraubuntu@gmail.com'
 )
