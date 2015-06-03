@@ -90,6 +90,7 @@ class Pipeline(Selector):
         self.__process__(hyp, uttid)
 
     def __process__(self, hyp, uttid):
+        print "client :" + self.__lm__ + " hyp: " + hyp + "\n"
         self.__previoushyp__ = hyp
         self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
 
