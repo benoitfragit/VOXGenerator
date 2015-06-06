@@ -29,9 +29,7 @@ class Pipeline(Selector):
         self.__pipeline__ = gst.parse_launch('gsettingsaudiosrc ! audioconvert ! audioresample '
                                         + '! vader name=vad auto_threshold=true '
                                         + '! pocketsphinx name=asr ! fakesink')
-        
-        print "LM: " + self.__getdefault__()
-                                        
+            
         self.__lm__    = self.__getdefault__()
         self.__loop__ = gobject.MainLoop()
         self.__previoushyp__ = ""
@@ -61,7 +59,7 @@ class Pipeline(Selector):
         self.__pipeline__.set_state(gst.STATE_PLAYING)
         context = self.__loop__.get_context()
         
-        while True:
+        while True:                        
             """ use a selector to change the language model """
             lm = self.__getactivatedlm__(self.__previoushyp__)
 

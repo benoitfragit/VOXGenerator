@@ -52,7 +52,7 @@ class PluginGenerator(Generator):
         self.__put__("self.__name__ = '" + self.__name__ + "'\n")  
 
     def __generate_body__(self, plugin):
-        commands = plugin.findall("command")            
+        commands = plugin.findall("command")          
         self.__addfunctionlookup__(commands)
         self.__addcommandlookup__(commands)
         self.__put__("self.__build__('" + self.__name__ + "'" + ", " + self.__reload__ + ")")
@@ -61,7 +61,7 @@ class PluginGenerator(Generator):
         self.__addcommandfunction__(commands)
         self.__addprocessfunction__()
         self.__left__()
-        
+    
     def __addPackageInclusion__(self, plugin):
         packages = plugin.findall("package")
         

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from activation import *
 from command_selector import FuzzySelector
 from receiver import Receiver
 
@@ -17,17 +18,19 @@ class Plugin(Receiver):
 
     def __receive__(self):
         conn, addr = self.__sock__.accept()
-        while True:
-            data = conn.recv(128)
-            if not data:
-                break
+        try:
+            while True:
+                data = conn.recv(128)
+                if not data:
+                    break
             
-            fields = data.split("::")
-            name = fields[0]
-            hyp  = fields[1]
+                fields = data.split("::")
+                name = fields[0]
+                hyp  = fields[1]
 
-            self.__process__(name, hyp)
-        self.__sock__.close()
+                self.__process__(name, hyp)
+        finally:
+            self.__sock__.close()
             
     def __process__(self, name, hyp):
         raise NotImplementedError('subclasses must override __process__()!')

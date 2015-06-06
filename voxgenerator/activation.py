@@ -9,10 +9,12 @@ class AbstractActivation:
     def __init__(self):
         self.__display__ = XlibUtils()
         
-        self.__types__     = self.__enum__("Invalid", "Window", "Keyword", "Mouse")
+        self.__types__     = self.__enum__("Invalid", "Window", "Keyword", "Mouse", "Custom")
+        
         self.__functions__ = {self.__types__.Window : self.__windowactivation__,
                               self.__types__.Keyword : self.__keywordactivation__,
-                              self.__types__.Mouse : self.__mouseactivation__}
+                              self.__types__.Mouse : self.__mouseactivation__,
+                              self.__types__.Custom : self.__customactivation__}
 
         self.__type__ = self.__types__.Invalid
 
@@ -27,6 +29,9 @@ class AbstractActivation:
         raise NotImplementedError('subclasses must override !')     
 
     def __mouseactivation__(self, *a):
+        raise NotImplementedError('subclasses must override !')
+
+    def __customactivation__(self, *a):
         raise NotImplementedError('subclasses must override !')
 
     def __isactive__(self, *a):
@@ -61,3 +66,11 @@ class MouseActivation(AbstractActivation):
     def __mouseactivation__(self, *a):
         x, y = self.__display__.__compute_mouse_position__()
         return self.__area__[0] <= x and x <= self.__area__[1] and self.__area__[2] <= y and y <= self.__area__[3]
+
+class CustomActivation(AbstractActivation):
+    def __init__(self):
+        AbstractActivation.__init__(self)
+        self.__type__ = self.__types__.Custom        
+        
+    def __customactivation__(self, *a):
+        raise NotImplementedError('subclasses must override !')
