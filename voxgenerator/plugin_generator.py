@@ -33,12 +33,12 @@ class PluginGenerator(Generator):
         self.__port__   = plugin.get("port")
         
         base = os.path.dirname(xml)
-        plugin_str_name = base + "/" + self.__name__ + ".py"
+        plugin_str_name = base + "/" + self.__name__.lower() + ".py"
         
         self.__f__ = open(plugin_str_name, 'w')
         self.__put__("#!/usr/bin/env python\n# -*- coding: utf-8 -*-")
         self.__put__("")
-        self.__put__("import os")
+        self.__put__("import os, logging    ")
         self.__put__("from voxgenerator import Plugin")
         
         self.__addPackageInclusion__(plugin)
@@ -50,6 +50,7 @@ class PluginGenerator(Generator):
         self.__put__("Plugin.__init__(self, '" + self.__ip__ + "', " + self.__port__ + ")")
         self.__put__("self.__id__ = " + self.__id__)
         self.__put__("self.__name__ = '" + self.__name__ + "'\n")  
+        self.__put__("self.__logger__ = logging.getLogger('voxgenerator." +  self.__name__ +  "')")
 
     def __generate_body__(self, plugin):
         commands = plugin.findall("command")          
@@ -59,7 +60,6 @@ class PluginGenerator(Generator):
         self.__put__("self.__receive__()")
         self.__left__()
         self.__addcommandfunction__(commands)
-        self.__addprocessfunction__()
         self.__left__()
     
     def __addPackageInclusion__(self, plugin):
@@ -112,21 +112,6 @@ class PluginGenerator(Generator):
                 self.__put__("raise NotImplementedError('subclasses must override " + name + "()!')")
             
             self.__left__()
-    
-    def __addprocessfunction__(self):
-        self.__put__("")
-        self.__put__("def __process__(self, name, hyp):")
-        self.__right__()
-        self.__put__("if self.__name__ == name:")
-        self.__right__()
-        self.__put__("print 'Plugin ' + name + " + "' receive : '+ hyp")
-        self.__put__("idx = self.__selector__.__query__(hyp)")
-        self.__put__("if self.__function__.has_key(idx):")
-        self.__right__()
-        self.__put__("self.__function__[idx]()")
-        self.__left__()
-        self.__left__()
-        self.__left__()
-    
+        
 if __name__ == '__main__':
     plugin_generator = PluginGenerator(sys.argv[1])

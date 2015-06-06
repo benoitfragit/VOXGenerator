@@ -13,7 +13,7 @@ class Checksum:
             result = self.__comparechecksum__(checksum_file, f)
         
         checksum = self.__computemd5checksum__(f)
-        with open(checksum_file, "w") as fl:
+        with open(checksum_file, "wb") as fl:
             fl.write(str(checksum))
             fl.close()    
     
@@ -22,7 +22,7 @@ class Checksum:
     def __comparechecksum__(self, checksum_file, f):
         first_line = ''
                
-        with open(checksum_file, 'r') as md5file:
+        with open(checksum_file, 'rb') as md5file:
             first_line = md5file.readline()
             checksum   = self.__computemd5checksum__(f)
             
@@ -36,7 +36,7 @@ class Checksum:
         with open(f, "rb") as ff:
             buf = ff.read()
             hasher.update(buf)
-            checksum = hasher.hexdigest()
+            checksum = hasher.digest()
             
             return checksum
         

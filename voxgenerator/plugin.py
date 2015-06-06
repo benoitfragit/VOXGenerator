@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
+import os, logging
 from activation import *
 from command_selector import FuzzySelector
 from receiver import Receiver
@@ -9,12 +9,15 @@ from receiver import Receiver
 class Plugin(Receiver):
     def __init__(self, ip, port):
         Receiver.__init__(self, ip, port)
+        
+        logging.basicConfig(level=logging.DEBUG)
+        
         self.__selector__ = FuzzySelector()
         self.__function__ = {}
         self.__command__  = {}
 
     def __build__(self, name, rebuild):
-        self.__selector__.__build__(name, self.__command__, rebuild)
+        self.__selector__.__build__(name.lower(), self.__command__, rebuild)
 
     def __receive__(self):
         conn, addr = self.__sock__.accept()
@@ -33,4 +36,11 @@ class Plugin(Receiver):
             self.__sock__.close()
             
     def __process__(self, name, hyp):
-        raise NotImplementedError('subclasses must override __process__()!')
+        if self.__name__ == name:
+            self.__logger__.info(name + ' receive : ' + hyp)
+            idx = self.__selector__.__query__(hyp)
+            if self.__function__.has_key(idx):
+                try:
+                    self.__function__[idx]()
+                except :
+                    self.__logger__.critical(name + ' should overwrite method process')
