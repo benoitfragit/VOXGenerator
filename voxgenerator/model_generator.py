@@ -8,8 +8,8 @@ class ModelGenerator:
     def __init__(self, xml, lms):
         base = os.path.dirname(lms)
         
-        if not os.path.isdir('lm'):
-            os.mkdir('lm')
+        if not os.path.isdir(base):
+            os.mkdir(base)
         
         if os.path.isfile(xml):
             plugin_tree = etree.parse(xml)

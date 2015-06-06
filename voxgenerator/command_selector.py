@@ -25,8 +25,6 @@ class FuzzySelector(ICommandSelector):
                 self.__frequency__(dict)
         
                 self.__serialize__(name)                
-        
-        self.__show__()
     
     def __occurence__(self, dict):
         for key in dict:
