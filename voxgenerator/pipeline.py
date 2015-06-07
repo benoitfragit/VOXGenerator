@@ -6,6 +6,7 @@ from selector import Selector
 import os, logging
 import gobject
 import pygst
+import threading
 pygst.require('0.10')
 gobject.threads_init()
 import gst
@@ -60,20 +61,22 @@ class Pipeline(Selector):
                 self.__clients__[name] = Sender(ip, int(port))
     
     def __play__(self):
+        thread = threading.Thread(target=self.__updateactivatedlm__)
+        thread.start()
         self.__pipeline__.set_state(gst.STATE_PLAYING)
-        context = self.__loop__.get_context()
-        
-        while True:                                    
-            """ use a selector to change the language model """
+        self.__loop__.run()
+
+    def __updateactivatedlm__(self):
+        """ use a selector to change the language model """
+        while True:
             lm = self.__getactivatedlm__(self.__previoushyp__)
 
             if lm is not self.__lm__:
                 asr = self.__pipeline__.get_by_name('asr')
                 asr.set_property('lmname', lm)  
                 self.__lm__ = lm
-                self.__logger__.info(lm + " is now active !")
-            
-            context.iteration(True)
+                self.__logger__.info(lm + " is now active !")    
+    
 
     def __pause__(self):
         self.__pipeline__.set_state(gst.STATE_PAUSED)       

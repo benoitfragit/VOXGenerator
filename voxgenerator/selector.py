@@ -94,7 +94,6 @@ class Selector:
         for id in sorted_priority:
             for activation in self.__activations__[id]:
                 if activation.__isactive__(hyp):
-                    print "active ", str(id)
                     self.__current_model_id__ = id
                     return
                 
@@ -103,7 +102,6 @@ class Selector:
         
         for lm in self.__plugins__:
             if self.__plugins__[lm] == self.__current_model_id__:
-                print "lm: ", lm
                 return lm
         
         return self.__default__

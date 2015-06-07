@@ -5,5 +5,6 @@ setup(
     version = '1.0.0',
     description = 'Vox generator',
     author = 'Benoit Franquet',
-    author_email = 'benoitfraubuntu@gmail.com'
+    author_email = 'benoitfraubuntu@gmail.com',
+    scripts = ['run_voxgenerator.py', 'run_voxgenerator']
 )
