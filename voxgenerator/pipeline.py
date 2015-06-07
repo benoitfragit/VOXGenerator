@@ -3,7 +3,7 @@
 
 from selector import Selector
 
-import os
+import os, logging
 import gobject
 import pygst
 pygst.require('0.10')
@@ -16,6 +16,10 @@ from sender import Sender
 class Pipeline(Selector):
     def __init__(self, xml):
         Selector.__init__(self, xml)
+        
+        logging.basicConfig(level=logging.DEBUG)
+        self.__logger__ = logging.getLogger('voxgenerator.pipeline')
+        
         self.__clients__ = {}
 
         pipeline_tree = etree.parse(xml)
@@ -59,7 +63,7 @@ class Pipeline(Selector):
         self.__pipeline__.set_state(gst.STATE_PLAYING)
         context = self.__loop__.get_context()
         
-        while True:                        
+        while True:                                    
             """ use a selector to change the language model """
             lm = self.__getactivatedlm__(self.__previoushyp__)
 
@@ -67,6 +71,7 @@ class Pipeline(Selector):
                 asr = self.__pipeline__.get_by_name('asr')
                 asr.set_property('lmname', lm)  
                 self.__lm__ = lm
+                self.__logger__.info(lm + " is now active !")
             
             context.iteration(True)
 
@@ -88,7 +93,7 @@ class Pipeline(Selector):
         self.__process__(hyp, uttid)
 
     def __process__(self, hyp, uttid):
-        print "client :" + self.__lm__ + " hyp: " + hyp + "\n"
+        self.__logger__.info(self.__lm__ + " will receive " + hyp)
         self.__previoushyp__ = hyp
         self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
 

@@ -1,2 +1,2 @@
 from pipeline import Pipeline
-from plugin   import Plugin
+from plugin import Plugin
