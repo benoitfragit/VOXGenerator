@@ -101,5 +101,9 @@ class Pipeline(Selector):
         self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
 
 if __name__ == '__main__':
-    p = Pipeline("pipeline.xml")
-    p.__play__()
+    if len(sys.argv >= 2:
+        pipelines_desriptions = sys.argv[1]
+        
+        if os.path.isfile(pipelines_description):
+            p = Pipeline(pipelines_descriptions)
+            p.__play__()
