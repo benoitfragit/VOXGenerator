@@ -27,10 +27,11 @@ class Plugin(Receiver):
                     break
             
                 fields = data.split("::")
-                name = fields[0]
-                hyp  = fields[1]
+                if len(fields) >= 2:
+                    name = fields[0]
+                    hyp  = fields[1]
 
-                self.__process__(name, hyp)
+                    self.__process__(name, hyp)
         finally:
             self.__sock__.close()
             
