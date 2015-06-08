@@ -1,7 +1,7 @@
 from distutils.core import setup
 setup(
     name = 'voxgenerator',
-    packages = ['voxgenerator'],
+    packages = ['pipeline', 'plugin', 'core', 'generator'],
     version = '1.0.0',
     description = 'Vox generator',
     author = 'Benoit Franquet',

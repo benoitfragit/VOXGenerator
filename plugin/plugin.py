@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os, logging
-from activation import *
 from command_selector import FuzzySelector
-from receiver import Receiver
+from voxgenerator.core import Receiver
 
 class Plugin(Receiver):
     def __init__(self, ip, port):

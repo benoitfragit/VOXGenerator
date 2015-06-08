@@ -12,7 +12,7 @@ gobject.threads_init()
 import gst
 import os, sys
 from lxml import etree
-from sender import Sender
+from voxgenerator.core import Sender
 
 class Pipeline(Selector):
     def __init__(self, xml):
@@ -101,7 +101,7 @@ class Pipeline(Selector):
         self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
 
 if __name__ == '__main__':
-    if len(sys.argv >= 2:
+    if len(sys.argv) >= 2:
         pipelines_desriptions = sys.argv[1]
         
         if os.path.isfile(pipelines_description):

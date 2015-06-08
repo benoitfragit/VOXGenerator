@@ -3,9 +3,9 @@
 
 import os, sys
 from lxml import etree
-from plugin_generator import PluginGenerator
-from model_generator import ModelGenerator
-from checksum import Checksum
+from voxgenerator.generator import PluginGenerator
+from voxgenerator.generator import ModelGenerator
+from voxgenerator.generator import Checksum
 from activation import *
 
 class Selector:
