@@ -90,10 +90,7 @@ class Pipeline(Selector):
     def __onmessage__(self, bus, msg):
         msgtype = msg.structure.get_name()
         if msgtype == 'result':
-            self.__onfinalresult__(msg.structure['hyp'], msg.structure['uttid'])
-
-    def __onfinalresult__(self, hyp, uttid):
-        self.__process__(hyp, uttid)
+            self.__process__(msg.structure['hyp'], msg.structure['uttid'])
 
     def __process__(self, hyp, uttid):
         self.__logger__.info(self.__lm__ + " will receive " + hyp)

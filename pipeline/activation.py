@@ -4,17 +4,25 @@
 import os, sys
 
 from xlib_utils import XlibUtils
+from time import localtime
         
 class AbstractActivation:
     def __init__(self):
         self.__display__ = XlibUtils()
         
-        self.__types__     = self.__enum__("Invalid", "Window", "Keyword", "Mouse", "Custom")
+        self.__types__     = self.__enum__("Invalid",
+                                           "Window",
+                                           "Keyword", 
+                                           "Mouse", 
+                                           "Custom",
+                                           "Time")
         
         self.__functions__ = {self.__types__.Window : self.__windowactivation__,
                               self.__types__.Keyword : self.__keywordactivation__,
                               self.__types__.Mouse : self.__mouseactivation__,
-                              self.__types__.Custom : self.__customactivation__}
+                              self.__types__.Custom : self.__customactivation__,
+                              self.__types__.Time : self.__timeactivation__,
+                              self.__types__.Screen : self.__screenactivation__}
 
         self.__type__ = self.__types__.Invalid
 
@@ -34,9 +42,16 @@ class AbstractActivation:
     def __customactivation__(self, *a):
         raise NotImplementedError('subclasses must override !')
 
+    def __timeactivation__(self, *a):
+        raise NotImplementedError('Subclasses must override !')
+
+    def __screenactivation__(self, *a):
+        raise NotImplementedError('Subclasses must override !')
+
     def __isactive__(self, *a):
         state = self.__functions__[self.__type__](a) 
         return state
+        
 
 class WindowActivation(AbstractActivation):
     def __init__(self, window):
@@ -74,3 +89,16 @@ class CustomActivation(AbstractActivation):
         
     def __customactivation__(self, *a):
         raise NotImplementedError('subclasses must override !')
+
+class TimeActivation(AbstractActivation):
+    def __init__(self, t):
+        self.__hour__ = 0
+        self.__min__  = 0
+        
+        if len(t) == 2:
+            self.__hour__ = t[0]
+            self.__min__  = t[1]
+
+    def __timeactivation__(self, *a):
+        current_time = localtime()
+        return (current_time.tm_hour < self.__hour__) or (current_time.tm_hour == self.__hour and current_time.tm_min < self.__min__)

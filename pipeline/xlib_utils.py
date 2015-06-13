@@ -20,7 +20,7 @@ class XlibUtils:
     def __compute_mouse_position__(self):
         data = self.__display__.screen().root.query_pointer()._data
         return data["root_x"], data["root_y"]
-
+        
 if __name__ == '__main__':
     x = XlibUtils()
     

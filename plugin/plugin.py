@@ -38,9 +38,7 @@ class Plugin(Receiver):
     def __process__(self, name, hyp):
         if self.__name__ == name:
             self.__logger__.info(name + ' receive : ' + hyp)
+            self.__logger__.info('command: ' + self.__command__[idx])
             idx = self.__selector__.__query__(hyp)
             if self.__function__.has_key(idx):
-                try:
-                    self.__function__[idx]()
-                except :
-                    self.__logger__.critical(name + ' should overwrite method process')
+                self.__function__[idx]()
