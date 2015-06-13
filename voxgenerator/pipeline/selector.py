@@ -75,7 +75,7 @@ class Selector:
             if window is not None:
                 self.__activations__[id].append(WindowActivation(window))
             
-            if active.get("mouse") == "True":
+            if eval(active.get("mouse")) == True:
                 x = active.find("x")
                 y = active.find("y")
                 self.__activations__[id].append(MouseActivation([int(x.get("start")), 
@@ -86,6 +86,12 @@ class Selector:
             keyword = active.get("keyword")
             if keyword is not None:
                 self.__activations__[id].append(KeywordActivation(keyword))
+
+            time = active.get("time")
+            if time is not None:
+                t = time.split(":")
+                field = [eval(elm) for elm in t]
+                self.__activations__[id].append(TimeActivation(field))
 
     def __updateactivations__(self, hyp):        
         sorted_priority = list(reversed(sorted(self.__priority__, key=self.__priority__.__getitem__))) 

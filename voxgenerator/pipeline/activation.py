@@ -87,12 +87,11 @@ class CustomActivation(AbstractActivation):
 
 class TimeActivation(AbstractActivation):
     def __init__(self, t):
-        self.__hour__ = 0
-        self.__min__  = 0
+        AbstractActivation.__init__(self)
+        self.__hour__, self.__min__  = 0, 0
         
         if len(t) == 2:
-            self.__hour__ = t[0]
-            self.__min__  = t[1]
+            self.__hour__, self.__min__  = t[0], t[1]
 
     def __timeactivation__(self, *a):
         current_time = localtime()
