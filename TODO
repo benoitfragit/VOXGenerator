@@ -1,0 +1,3 @@
+ * Moving the activation process into the plugin
+ * keeping a keyword activation in the selector pipelien
+ * make the selector able to choose the highest priority activated plugin
