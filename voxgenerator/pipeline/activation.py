@@ -3,12 +3,12 @@
 
 import os, sys
 
-from xlib_utils import XlibUtils
+from voxgenerator.service import Display
 from time import localtime
         
 class AbstractActivation:
     def __init__(self):
-        self.__display__ = XlibUtils()
+        self.__display__ = Display()
         
         self.__types__     = self.__enum__("Invalid",
                                            "Window",

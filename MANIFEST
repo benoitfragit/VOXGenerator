@@ -15,7 +15,9 @@ voxgenerator/pipeline/__init__.py
 voxgenerator/pipeline/activation.py
 voxgenerator/pipeline/pipeline.py
 voxgenerator/pipeline/selector.py
-voxgenerator/pipeline/xlib_utils.py
 voxgenerator/plugin/__init__.py
 voxgenerator/plugin/command_selector.py
 voxgenerator/plugin/plugin.py
+voxgenerator/service/__init__.py
+voxgenerator/service/display.py
+voxgenerator/service/speaker.py

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Xlib.display
+from Xlib import display
 
-class XlibUtils:
+class Display:
     def __init__(self):
-        self.__display__ = Xlib.display.Display()
+        self.__display__ = display.Display()
         
     def __compute_active_window__(self):
         window = self.__display__.get_input_focus().focus
@@ -22,7 +22,7 @@ class XlibUtils:
         return data["root_x"], data["root_y"]
         
 if __name__ == '__main__':
-    x = XlibUtils()
+    x = Display()
     
     print x.__compute_active_window__()
     print x.__compute_mouse_position__()
