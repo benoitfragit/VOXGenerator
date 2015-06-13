@@ -124,3 +124,14 @@ Each pipeline is going to work with one plugin.  A langage model controller make
 Be sure to include the file containing the list of available plugins descriptions.
 
 When you launch a Pipeline then a versioning system is going to launch a plugin generation, langage model generation and a langage control file generation so that user as nothing else to do than launching a pipeline.
+
+Todo
+====
+
+ * add an always actve flags for plugin
+ * add an exclusive flag for plugin 
+ * create a new entity class with an uniq id
+ * make plugin ad pipele class heritate from his entity
+ * create a entity managerto start/stop each entity
+ * adding new activations (clipboard, time)
+ * adding plugins example
