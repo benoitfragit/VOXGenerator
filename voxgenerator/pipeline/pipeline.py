@@ -12,7 +12,7 @@ gobject.threads_init()
 import gst
 import os, sys
 from lxml import etree
-from voxgenerator.core import Sender
+from voxgenerator.core import Senderz
 
 class Pipeline(Selector):
     def __init__(self, xml):
@@ -60,7 +60,7 @@ class Pipeline(Selector):
             if self.__plugins__.has_key(name) and ip is not None and port is not None:
                 self.__clients__[name] = Sender(ip, int(port))
     
-    def __play__(self):
+    def __run__(self):
         thread = threading.Thread(target=self.__updateactivatedlm__)
         thread.start()
         self.__pipeline__.set_state(gst.STATE_PLAYING)
@@ -93,9 +93,12 @@ class Pipeline(Selector):
             self.__process__(msg.structure['hyp'], msg.structure['uttid'])
 
     def __process__(self, hyp, uttid):
-        self.__logger__.info(self.__lm__ + " will receive " + hyp)
         self.__previoushyp__ = hyp
-        self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
+        try:
+            self.__logger__.info(self.__lm__ + " will receive " + hyp)
+            self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
+        except:
+            self.__logger__.info(self.__lm__ + " is not connected!")
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:
@@ -103,4 +106,4 @@ if __name__ == '__main__':
         
         if os.path.isfile(pipelines_description):
             p = Pipeline(pipelines_descriptions)
-            p.__play__()
+            p.__run__()
