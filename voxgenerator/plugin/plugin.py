@@ -42,4 +42,8 @@ class Plugin(Receiver):
             self.__logger__.info('command: ' + self.__command__[idx])
             
             if self.__function__.has_key(idx):
-                self.__function__[idx]()
+                try:
+                    self.__function__[idx]()
+                except:
+                    self.__logger__.warning("you should overwrite method" + self.__command__[idx])
+

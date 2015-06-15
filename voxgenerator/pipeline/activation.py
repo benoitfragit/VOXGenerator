@@ -45,8 +45,10 @@ class AbstractActivation:
         raise NotImplementedError('Subclasses must override !')
 
     def __isactive__(self, *a):
-        state = self.__functions__[self.__type__](a) 
-        return state
+        try:
+            return self.__functions__[self.__type__](a) 
+        except:
+            return False
         
 class WindowActivation(AbstractActivation):
     def __init__(self, window):
@@ -88,6 +90,7 @@ class CustomActivation(AbstractActivation):
 class TimeActivation(AbstractActivation):
     def __init__(self, t):
         AbstractActivation.__init__(self)
+        self.__type__ = self.__types__.Time
         self.__hour__, self.__min__  = 0, 0
         
         if len(t) == 2:
