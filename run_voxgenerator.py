@@ -8,4 +8,4 @@ import os, sys
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and os.path.isfile(sys.argv[1]):
         p = Pipeline(sys.argv[1])
-        p.__run__() 
+        p.__run__()
