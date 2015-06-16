@@ -12,10 +12,12 @@ gobject.threads_init()
 import gst
 import os, sys
 from lxml import etree
-from voxgenerator.core import Senderz
+from voxgenerator.core import Sender
+from voxgenerator.core import DbusClient
 
-class Pipeline(Selector):
+class Pipeline(Selector, DbusClient):
     def __init__(self, xml):
+        DbusClient.__init__(self)
         Selector.__init__(self, xml)
         
         logging.basicConfig(level=logging.DEBUG)
@@ -94,6 +96,7 @@ class Pipeline(Selector):
 
     def __process__(self, hyp, uttid):
         self.__previoushyp__ = hyp
+        self.dbus_new_transcription(hyp)
         try:
             self.__logger__.info(self.__lm__ + " will receive " + hyp)
             self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
