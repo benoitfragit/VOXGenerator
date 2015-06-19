@@ -3,7 +3,7 @@
 
 from selector import Selector
 
-import os, logging
+import os
 import gobject
 import pygst
 import threading
@@ -12,17 +12,14 @@ gobject.threads_init()
 import gst
 import os, sys
 from lxml import etree
-from voxgenerator.core import Sender
-from voxgenerator.core import DbusClient
 
-class Pipeline(Selector, DbusClient):
+from voxgenerator.core import DbusPipeline
+
+class Pipeline(Selector, DbusPipeline):
     def __init__(self, xml):
-        DbusClient.__init__(self)
+        DbusPipeline.__init__(self, 'Pipeline')
         Selector.__init__(self, xml)
-        
-        logging.basicConfig(level=logging.DEBUG)
-        self.__logger__ = logging.getLogger('voxgenerator.pipeline')
-        
+                
         self.__clients__ = {}
 
         pipeline_tree = etree.parse(xml)
@@ -37,7 +34,6 @@ class Pipeline(Selector, DbusClient):
                                         + '! pocketsphinx name=asr ! fakesink')
             
         self.__lm__    = self.__getdefault__()
-        self.__loop__ = gobject.MainLoop()
         self.__previoushyp__ = ""
                 
         asr = self.__pipeline__.get_by_name('asr')
@@ -46,11 +42,7 @@ class Pipeline(Selector, DbusClient):
         asr.set_property('lmctl',  self.__lmctl__)
         asr.set_property("lmname", self.__lm__)
         asr.connect('result', self.__onresult__)
-        
-        bus = self.__pipeline__.get_bus()
-        bus.add_signal_watch()
-        bus.connect('message::application', self.__onmessage__)
-                
+                        
     def __loadclientadress__(self, root):
         pipelines = root.findall("pipeline")
         for pipe in pipelines:
@@ -59,8 +51,10 @@ class Pipeline(Selector, DbusClient):
             port = pipe.get("port")
             
             if self.__plugins__.has_key(name) and ip is not None and port is not None:
+                """
                 self.__clients__[name] = Sender(ip, int(port))
-    
+                """    
+                
     def __run__(self):
         thread = threading.Thread(target=self.__updateactivatedlm__)
         thread.start()
@@ -78,29 +72,14 @@ class Pipeline(Selector, DbusClient):
                 self.__lm__ = lm
                 self.__logger__.info(lm + " is now active !")    
     
-
     def __pause__(self):
         self.__pipeline__.set_state(gst.STATE_PAUSED)       
 
     def __onresult__(self, asr, text, uttid):        
-        struct = gst.Structure('result')
-        struct.set_value('hyp', text)
-        struct.set_value('uttid', uttid)
-        asr.post_message(gst.message_new_application(asr, struct))
-
-    def __onmessage__(self, bus, msg):
-        msgtype = msg.structure.get_name()
-        if msgtype == 'result':
-            self.__process__(msg.structure['hyp'], msg.structure['uttid'])
-
-    def __process__(self, hyp, uttid):
-        self.__previoushyp__ = hyp
-        self.dbus_new_transcription(hyp)
-        try:
-            self.__logger__.info(self.__lm__ + " will receive " + hyp)
-            self.__clients__[self.__lm__].__send__(self.__lm__  + "::" + hyp)
-        except:
-            self.__logger__.info(self.__lm__ + " is not connected!")
+        self.__previoushyp__ = text
+        
+        self.__logger__.info(self.__lm__ + " will receive " + text)
+        self.dbus_pipeline_transcription(self.__lm__)
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:
