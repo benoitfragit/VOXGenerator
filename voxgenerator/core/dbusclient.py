@@ -17,7 +17,7 @@ class DbusClient(dbus.service.Object):
         DBusGMainLoop(set_as_default=True)
         
         busName = dbus.service.BusName('org.freedesktop.Voxgenerator', bus = dbus.SessionBus())
-        dbus.service.Object.__init__(self, busName, '/Voxgenerator')        
+        dbus.service.object.__init__(self, busName, '/Voxgenerator')        
 
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
                          signature='')
