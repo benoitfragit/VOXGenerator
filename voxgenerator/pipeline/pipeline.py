@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from selector import Selector
@@ -78,9 +78,12 @@ class Pipeline(Selector, DbusPipeline):
 
     def __onresult__(self, asr, text, uttid):        
         self.__previoushyp__ = text
-        
         self.__logger__.info(self.__lm__ + " will receive " + text)
-        self.dbus_pipeline_transcription(self.__lm__)
+        
+        try:
+            self.dbus_pipeline_transcription(self.__lm__, text)
+        except:
+            self.__logger__.critical("Plugin " + self.__lm__ + " hasn't been started !")
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:
