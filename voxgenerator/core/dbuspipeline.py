@@ -32,9 +32,9 @@ class DbusPipeline(DbusSessionPlugin):
         self.__logger__.info("dbus: Request to put the pipeline ine play")
 
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
-                         signature='s')
-    def dbus_pipeline_transcription(self, s):
-        self.__logger__.info("dbus: Telling plugin " + s + " to grab the hyp")
+                         signature='ss')
+    def dbus_pipeline_transcription(self, lm, s):
+        self.__logger__.info("dbus: Sending: " + s + " to the plugin: " + lm)
         self.__hyp__ = s
 
     @dbus.service.method(dbus_interface='org.freedesktop.Voxgenerator',
