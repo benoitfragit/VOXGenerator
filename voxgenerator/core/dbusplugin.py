@@ -6,6 +6,12 @@ import dbus
 
 from dbussessionplugin import DbusSessionPlugin
 
+"""
+@Todo
+add a signal receiver fonc to connect the pluin to the
+signal emitted by the pipeline
+"""
+
 class DbusPlugin(DbusSessionPlugin):
     def __init__(self, name):
         DbusSessionPlugin.__init__(self, name)
