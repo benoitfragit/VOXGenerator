@@ -98,6 +98,10 @@ class Selector:
         
         self.__current_model_id__ = -1
         for id in sorted_priority:
+            if len(self.__activations__[id]) == 0:
+                self.__current_model_id__ = id
+                return
+
             for activation in self.__activations__[id]:
                 if activation.__isactive__(hyp):
                     self.__current_model_id__ = id

@@ -7,7 +7,7 @@ import os
 import gobject
 import pygst
 import threading
-pygst.require('0.10')
+pygst.require('1.0')
 gobject.threads_init()
 import gst
 import os, sys
@@ -31,7 +31,6 @@ class Pipeline(Selector, DbusPipeline):
         self.__hmm__ = root[0].find("hmm").get("file")
 
         self.__pipeline__ = gst.parse_launch('gsettingsaudiosrc ! audioconvert ! audioresample '
-                                        + '! vader name=vad auto_threshold=true '
                                         + '! pocketsphinx name=asr ! fakesink')
 
         self.__lm__    = self.__getdefault__()

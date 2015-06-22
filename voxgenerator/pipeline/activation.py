@@ -8,8 +8,6 @@ from time import localtime
         
 class AbstractActivation:
     def __init__(self):
-        self.__display__ = Display()
-        
         self.__types__     = self.__enum__("Invalid",
                                            "Window",
                                            "Keyword", 
@@ -53,6 +51,7 @@ class AbstractActivation:
 class WindowActivation(AbstractActivation):
     def __init__(self, window):
         AbstractActivation.__init__(self)
+        self.__display__ = Dsplay()
         self.__type__ = self.__types__.Window
         self.__window__ = window
         
@@ -72,6 +71,7 @@ class KeywordActivation(AbstractActivation):
 class MouseActivation(AbstractActivation):
     def __init__(self, area):
         AbstractActivation.__init__(self)
+        self.__display__ = Display()
         self.__type__ = self.__types__.Mouse
         self.__area__ = area
     
