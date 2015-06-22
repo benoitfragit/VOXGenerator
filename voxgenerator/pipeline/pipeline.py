@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from selector import Selector
@@ -33,7 +33,7 @@ class Pipeline(Selector, DbusPipeline):
         self.__pipeline__ = gst.parse_launch('gsettingsaudiosrc ! audioconvert ! audioresample '
                                         + '! vader name=vad auto_threshold=true '
                                         + '! pocketsphinx name=asr ! fakesink')
-            
+
         self.__lm__    = self.__getdefault__()
         self.__previoushyp__ = ""
                 
@@ -41,9 +41,14 @@ class Pipeline(Selector, DbusPipeline):
         asr.set_property('hmm',    self.__hmm__)
         asr.set_property('dict',   self.__dic__)
         asr.set_property('lmctl',  self.__lmctl__)
+            
+        self.__logger__.info("ok 2")
         asr.set_property("lmname", self.__lm__)
+        self.__logger__.info("ok 1")
         asr.connect('result', self.__onresult__)
-                        
+
+
+        
     def __loadclientadress__(self, root):
         pipelines = root.findall("pipeline")
         for pipe in pipelines:
@@ -78,9 +83,12 @@ class Pipeline(Selector, DbusPipeline):
 
     def __onresult__(self, asr, text, uttid):        
         self.__previoushyp__ = text
-        
         self.__logger__.info(self.__lm__ + " will receive " + text)
-        self.dbus_pipeline_transcription(self.__lm__)
+        
+        try:
+            self.dbus_pipeline_transcription(self.__lm__, text)
+        except:
+            self.__logger__.critical("Plugin " + self.__lm__ + " hasn't been started !")
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:
