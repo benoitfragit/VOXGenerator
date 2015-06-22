@@ -15,7 +15,7 @@ class DbusPipeline(DbusSessionPlugin):
                          signature='')
     def dbus_pipeline_restart(self):
         self.__logger__.info("dbus: Request to restart the pipeline")
-    
+
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
                          signature='')
     def dbus_pipeline_stop(self):
@@ -25,9 +25,9 @@ class DbusPipeline(DbusSessionPlugin):
                          signature='')
     def dbus_pipeline_pause(self):
         self.__logger__.info("dbus: Request to pause the pipeline")
-    
+
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
-                         signature='')    
+                         signature='')
     def dbus_pipeline_play(self):
         self.__logger__.info("dbus: Request to put the pipeline ine play")
 
@@ -38,6 +38,6 @@ class DbusPipeline(DbusSessionPlugin):
         self.__hyp__ = s
 
     @dbus.service.method(dbus_interface='org.freedesktop.Voxgenerator',
-                        in_signature='', out_signature='s')    
+                        in_signature='', out_signature='s')
     def dbus_get_transcription(self):
         return self.__hyp__
