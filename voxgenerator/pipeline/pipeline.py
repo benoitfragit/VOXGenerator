@@ -20,8 +20,6 @@ class Pipeline(Selector, DbusPipeline):
         DbusPipeline.__init__(self, 'Pipeline')
         Selector.__init__(self, xml)
 
-        self.__clients__ = {}
-
         pipeline_tree = etree.parse(xml)
         root = pipeline_tree.xpath("/pipelines")
 
