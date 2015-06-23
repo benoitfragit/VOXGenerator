@@ -14,12 +14,12 @@ class Plugin(DbusPlugin):
         self.__command__  = {}
 
     def __build__(self, rebuild):
-        self.__selector__.__build__(sel.__name__.lower(), self.__command__, rebuild)
+        self.__selector__.__build__(self.__name__.lower(), self.__command__, rebuild)
 
     def __process__(self, hyp):
         idx = self.__selector__.__query__(hyp)
         self.__logger__.info('command: ' + self.__command__[idx])
-            
+
         if self.__function__.has_key(idx):
             try:
                 self.__function__[idx]()
