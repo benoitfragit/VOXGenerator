@@ -29,8 +29,6 @@ class PluginGenerator(Generator):
         self.__id__     = plugin.get("id")
         self.__name__   = plugin.get("name")
         self.__reload__ = plugin.get("reload")
-        self.__ip__     = plugin.get("ip")
-        self.__port__   = plugin.get("port")
         
         base = os.path.dirname(xml)
         plugin_str_name = base + "/" + self.__name__.lower() + ".py"

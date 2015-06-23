@@ -25,14 +25,11 @@ class Pipeline(Selector, DbusPipeline):
         pipeline_tree = etree.parse(xml)
         root = pipeline_tree.xpath("/pipelines")
 
-        self.__loadclientadress__(root[0])
-
         self.__dic__ = root[0].find("dic").get("file")
         self.__hmm__ = root[0].find("hmm").get("file")
 
         self.__pipeline__ = gst.parse_launch('gsettingsaudiosrc ! audioconvert ! audioresample '
                                         + '! vader auto-threshold=true ! pocketsphinx name=asr ! fakesink')
-
         self.__lm__    = self.__getdefault__()
         self.__previoushyp__ = ""
 
@@ -42,18 +39,6 @@ class Pipeline(Selector, DbusPipeline):
         asr.set_property('lmctl',  self.__lmctl__)
         asr.set_property("lmname", self.__lm__)
         asr.connect('result', self.__onresult__)
-
-    def __loadclientadress__(self, root):
-        pipelines = root.findall("pipeline")
-        for pipe in pipelines:
-            name = pipe.get("plugin")
-            ip   = pipe.get("ip")
-            port = pipe.get("port")
-
-            if self.__plugins__.has_key(name) and ip is not None and port is not None:
-                """
-                self.__clients__[name] = Sender(ip, int(port))
-                """
 
     def __run__(self):
         thread = threading.Thread(target=self.__updateactivatedlm__)
