@@ -28,8 +28,7 @@ class DbusPlugin(DbusSessionPlugin):
         raise NotImplementedError('Subclasses must override !')
 
     def __is_command_valid__(self, *a):
-        print len(a)
-        if len(a) >= 1 and a[0] == self.__name__:
+        if len(a) > 1 and a[0] == self.__name__:
             self.__logger__.info("Plugin: " + self.__name__ + " will proceed command: " + a[1])
             return True
         else:
