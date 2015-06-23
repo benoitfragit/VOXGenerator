@@ -3,47 +3,26 @@
 
 import os, logging
 from command_selector import FuzzySelector
-from voxgenerator.core import Receiver
+from voxgenerator.core import DbusPlugin
 
-class Plugin(Receiver):
-    def __init__(self, ip, port):
-        Receiver.__init__(self, ip, port)
-        
-        logging.basicConfig(level=logging.DEBUG)
-        
+class Plugin(DbusPlugin):
+    def __init__(self, name):
+        DbusPlugin.__init__(self, name)
+
         self.__selector__ = FuzzySelector()
         self.__function__ = {}
         self.__command__  = {}
 
-    def __build__(self, name, rebuild):
-        self.__selector__.__build__(name.lower(), self.__command__, rebuild)
+    def __build__(self, rebuild):
+        self.__selector__.__build__(sel.__name__.lower(), self.__command__, rebuild)
 
-    def __receive__(self):
-        conn, addr = self.__sock__.accept()
-        try:
-            while True:
-                data = conn.recv(128)
-                if not data:
-                    break
+    def __process__(self, hyp):
+        idx = self.__selector__.__query__(hyp)
+        self.__logger__.info('command: ' + self.__command__[idx])
             
-                fields = data.split("::")
-                if len(fields) >= 2:
-                    name = fields[0]
-                    hyp  = fields[1]
-
-                    self.__process__(name, hyp)
-        finally:
-            self.__sock__.close()
-            
-    def __process__(self, name, hyp):
-        if self.__name__ == name:
-            self.__logger__.info(name + ' receive : ' + hyp)
-            idx = self.__selector__.__query__(hyp)
-            self.__logger__.info('command: ' + self.__command__[idx])
-            
-            if self.__function__.has_key(idx):
-                try:
-                    self.__function__[idx]()
-                except:
-                    self.__logger__.warning("you should overwrite method" + self.__command__[idx])
+        if self.__function__.has_key(idx):
+            try:
+                self.__function__[idx]()
+            except:
+                self.__logger__.warning("you should overwrite method" + self.__command__[idx])
 

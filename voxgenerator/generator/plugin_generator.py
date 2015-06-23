@@ -39,7 +39,7 @@ class PluginGenerator(Generator):
         self.__put__("#!/usr/bin/env python\n# -*- coding: utf-8 -*-")
         self.__put__("")
         self.__put__("import os, logging    ")
-        self.__put__("from voxgenerator import Plugin")
+        self.__put__("from voxgenerator.plugin import Plugin")
         
         self.__addPackageInclusion__(plugin)
         
@@ -47,17 +47,15 @@ class PluginGenerator(Generator):
         self.__right__()
         self.__put__("def __init__(self):")
         self.__right__()
-        self.__put__("Plugin.__init__(self, '" + self.__ip__ + "', " + self.__port__ + ")")
+        self.__put__("Plugin.__init__(self, '" + self.__name__ + ")")
         self.__put__("self.__id__ = " + self.__id__)
-        self.__put__("self.__name__ = '" + self.__name__ + "'\n")  
-        self.__put__("self.__logger__ = logging.getLogger('voxgenerator." +  self.__name__ +  "')")
 
     def __generate_body__(self, plugin):
         commands = plugin.findall("command")          
         self.__addfunctionlookup__(commands)
         self.__addcommandlookup__(commands)
-        self.__put__("self.__build__('" + self.__name__ + "'" + ", " + self.__reload__ + ")")
-        self.__put__("self.__receive__()")
+        self.__put__("self.__build__(" + self.__reload__ + ")")
+        self.__put__("self.__run__()")
         self.__left__()
         self.__addcommandfunction__(commands)
         self.__left__()
