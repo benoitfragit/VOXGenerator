@@ -8,6 +8,8 @@ from lxml import etree
 import os.path
 
 class PluginGenerator(Generator):
+    plugin_id = 0
+
     def __init__(self, xml):
         Generator.__init__(self)
 
@@ -26,7 +28,6 @@ class PluginGenerator(Generator):
         self.__generate_close__()
 
     def __generate_base__(self, plugin, xml):
-        self.__id__     = plugin.get("id")
         self.__name__   = plugin.get("name")
         self.__reload__ = plugin.get("reload")
 
@@ -46,7 +47,8 @@ class PluginGenerator(Generator):
         self.__put__("def __init__(self):")
         self.__right__()
         self.__put__("Plugin.__init__(self, '" + self.__name__ + "')")
-        self.__put__("self.__id__ = " + self.__id__)
+        self.__put__("self.__id__ = " + str(PluginGenerator.plugin_id))
+        PluginGenerator.plugin_id += 1
 
     def __generate_body__(self, plugin):
         commands = plugin.findall("command")

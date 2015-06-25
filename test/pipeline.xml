@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<pipelines>
+    <dic     file="/home/benoit/Projet/VOXGenerator/test/sphinx/dictionnary.dic"/>
+    <hmm     file="/home/benoit/Projet/VOXGenerator/test/sphinx/hmm"/>
+    <include file="/home/benoit/Projet/VOXGenerator/test/plugin.xml"/>
+    <lmctl   file="/home/benoit/Projet/VOXGenerator/test/lm/lmctl.txt"/>
+
+    <pipeline priority="1" plugin="Action">
+        <activation mouse="True">
+            <x start="0" end="200"/>
+            <y start="0" end="200"/>
+        </activation>
+    </pipeline>
+    <pipeline default="True" priority="0" plugin="Desktop"/>
+</pipelines>

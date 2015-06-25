@@ -7,7 +7,7 @@ setup(
                 'voxgenerator.pipeline',
                 'voxgenerator.generator',
                 'voxgenerator.service'],
-    version = '1.0.2',
+    version = '1.0.3',
     description = 'Vox generator',
     url = 'https://github.com/benoitfragit/VOXGenerator/tree/master/voxgenerator',
     author = 'Benoit Franquet',

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<plugins>
+    <plugin name="Desktop" reload="False">
+        <command name="home"      transcription="ouvre mon dossier personnel" type="system" exec="xdg-open /home/benoit"/>
+        <command name="documents" transcription="ouvre mes documents"         type="system" exec="xdg-open /home/benoit/Documents"/>
+        <command name="musiques"  transcription="ouvre ma musique"            type="system" exec="xdg-open /home/benoit/Musique"/>
+        <command name="images"    transcription="ouvre mes images"            type="system" exec="xdg-open /home/benoit/Images"/>
+        <command name="projets"   transcription="ouvre mes projets"           type="system" exec="xdg-open /home/benoit/Projet"/>
+        <command name="heure"     transcription="quelle heure est t-il"       type="custom"/>
+    </plugin>
+
+    <plugin name="Action" reload="False">
+        <command name="copier" transcription="copier ceci" type="system" exec="xdotool key ctrl+c"/>
+        <command name="coller" transcription="coller ici"  type="system" exec="xdotool key ctrl+v"/>
+        <command name="couper" transcription="couper ceci" type="system" exec="xdotool key ctrl+x"/>
+    </plugin>
+</plugins>
