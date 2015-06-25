@@ -22,7 +22,10 @@ class DbusPlugin(DbusSessionPlugin):
 
     def __dbus_process_hyp__(self, *a, **ka):
         if self.__is_command_valid__(*a):
-            self.__process__(a[1])
+            try:
+                self.__process__(a[1])
+            except:
+                self.__logger__.warning("method process hasn't been overwritten")
 
     def __process__(self, hyp):
         raise NotImplementedError('Subclasses must override !')
