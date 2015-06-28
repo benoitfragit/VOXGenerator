@@ -18,7 +18,14 @@ class DbusPlugin(DbusSessionPlugin):
         self.__bus__.add_signal_receiver(self.__dbus_process_hyp__,
                                         interface_keyword = 'org.freedesktop.Voxgenerator',
                                         member_keyword = 'Pipeline',
-                                        path_keyword = self.__dbus_path__ + '/Voxgenerator/Pipeline')
+                                        path_keyword = self.__dbus_path__ + '/Pipeline')
+
+        self.dbus_plugin_registration(self.__name__)
+
+    @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
+                         signature='')
+    def dbus_plugin_registration(self, name):
+        self.__logger__.info("Registering: " + self.__dbus_path__ + "/" + name)
 
     def __dbus_process_hyp__(self, *a, **ka):
         if self.__is_command_valid__(*a):
