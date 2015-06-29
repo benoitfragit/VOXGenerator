@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controller import Controller
+from icontroller import IController
 from Tkinter import *
 import tkFileDialog
 
-class View(Controller, Tk):
-    def __init__(self, parent):
-        Controller.__init__(self)
+class View(Tk):
+    def __init__(self, ictrl, parent):
         Tk.__init__(self, parent);
-
-        self.__parent__ = parent
+        self.__controller__ = ictrl
+        self.__parent__     = parent
 
         self.__serviceactivated__ = BooleanVar()
-        self.__serviceactivated__.set(self.__isservicerunning__)
+        self.__serviceactivated__.set(self.__controller__.get_service_status())
 
         self.__pipelinedescription__ = StringVar()
         self.__pipelinedescription__.set("Unknown")
 
         self.__pipelineactivated__ = BooleanVar()
-        self.__pipelineactivated__.set(self.__pipelineplaying__)
+        self.__pipelineactivated__.set(self.__controller__.get_pipeline_status())
 
         self.__initialize__()
 
@@ -46,7 +45,7 @@ class View(Controller, Tk):
         frame_description = Frame(frame_pipe)
         label_pipe = Label(frame_description, textvariable=self.__pipelinedescription__, anchor="w", justify=LEFT)
         label_pipe.pack(side=LEFT, fill=X, expand=1, padx=5, pady=5)
-        button_pipe = Button(frame_description, text="Choose", command=self.__choosedescription__)
+        button_pipe = Button(frame_description, text="Choose", command=self.__choose_description__)
         button_pipe.pack(side=LEFT, padx=5, pady=5)
         frame_description.pack(fill=X, padx=5, pady=5)
 
@@ -67,30 +66,33 @@ class View(Controller, Tk):
         """
         frame_plugins = LabelFrame(self, text="Plugins")
 
-        listbox = Listbox(frame_plugins)
+        self.__listbox__ = Listbox(frame_plugins)
 
-        for plugin in self.__plugins__:
-            listbox.insert(END, plugin)
+        plugins = self.__controller__.get_current_plugins()
+        for name in plugins.keys():
+            if plugins[name] == True:
+                self.__listbox__.insert(END, name)
 
-        listbox.pack(fill=BOTH, expand=1)
+        self.__listbox__.pack(fill=BOTH, expand=1)
         frame_plugins.pack(fill=BOTH, padx=5, pady=5, expand=1)
 
         self.resizable(True, True)
 
     def __update_service_status__(self):
         var = self.__serviceactivated__.get()
-        self.__applyservicestatus__(var)
+        self.__controller__.set_service_status(var)
 
     def __update_pipeline_status__(self):
         var = self.__pipelineactivated__.get()
-        self.__applypipelinestatus__(var)
+        self.__controller__.set_pipeline_status(var)
 
-    def __choosedescription__(self):
+    def __choose_description__(self):
         f = tkFileDialog.askopenfilename()
         self.__pipelinedescription__.set(f)
-        self.__setnewdescription__(f)
+        self.__controller__.set_current_description(f)
 
-if __name__ == '__main__':
-    app = View(None)
-    app.title('Voxgenerator control')
-    app.mainloop()
+    def set_current_plugins(self, plugins):
+        self.__listbox__.delete(0, END)
+        for name in plugins.keys():
+            if plugins[name] == True:
+                self.__listbox__.insert(END, name)
