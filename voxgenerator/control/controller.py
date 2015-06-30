@@ -18,7 +18,7 @@ class Controller(IController):
         self.__view__           = View(self, None)
 
         self.__bus__.add_signal_receiver(self.__dbus_process_registration__,
-                                       interface_name='org.freedesktop.Voxgenerator',
+                                       dbus_interface='org.freedesktop.Voxgenerator',
                                        signal_name='dbus_plugin_registration')
 
         self.__view__.title('Voxgenerator control')
