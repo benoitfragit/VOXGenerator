@@ -50,10 +50,8 @@ class Controller(IController):
 
     def __addnewconnection__(self, signal, name):
         self.__bus__.add_signal_receiver(self.__dbus_process_registration__,
-                                         interface_keyword = 'org.freedesktop.Voxgenerator',
-                                         signal_name=signal,
-                                         path_keyword="/org/freedesktop/Voxgenerator/" + name,
-                                         member_keyword=name)
+                                         interface_name = 'org.freedesktop.Voxgenerator',
+                                         signal_name    = signal)
 
     def __update_service__(self):
         if self.__servicestatus__ == False:
