@@ -17,9 +17,9 @@ class Controller(IController):
         self.__plugins__        = {}
         self.__view__           = View(self, None)
 
-        self.__initializecontroller__()
-
-        self.__addnewconnection__("dbus_plugin_registration", "Action")
+        self.__bus__.add_signal_receiver(self.__dbus_process_registration__,
+                                       interface_name='org.freedesktop.Voxgenerator',
+                                       signal_name='dbus_plugin_registration')
 
         self.__view__.title('Voxgenerator control')
         gobject.idle_add(self.__updateview__)
@@ -47,11 +47,6 @@ class Controller(IController):
         except:
             self.__servicestatus_ = False
             self.__pipelinestatus__  = False
-
-    def __addnewconnection__(self, signal, name):
-        self.__bus__.add_signal_receiver(self.__dbus_process_registration__,
-                                         interface_name = 'org.freedesktop.Voxgenerator',
-                                         signal_name    = signal)
 
     def __update_service__(self):
         if self.__servicestatus__ == False:
@@ -98,7 +93,6 @@ class Controller(IController):
                                             "/org/freedesktop/Voxgenerator/" + name)
 
                 self.__plugins__[name] = True
-                self.__addnewconnection__("dbus_plugin_registration", name)
             except:
                 self.__plugins__[name] = False
 
