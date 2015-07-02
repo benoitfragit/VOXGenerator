@@ -13,7 +13,7 @@ setup(
     url = 'https://github.com/benoitfragit/VOXGenerator/tree/master/voxgenerator',
     author = 'Benoit Franquet',
     author_email = 'benoitfraubuntu@gmail.com',
-    scripts = ['run_voxgenerator.py', 'run_voxgenerator'],
+    scripts = ['run_voxgenerator.py', 'run_voxgenerator', 'run_voxgenerator_gui.py'],
     keywords = ['voice', 'control', 'pocketsphinx'],
     classifiers     = ["Programming Language :: Python",
                      "Development Status :: 4 - Beta",
