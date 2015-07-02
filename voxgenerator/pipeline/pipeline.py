@@ -23,6 +23,7 @@ class Pipeline(Selector, DbusPipeline):
         pipeline_tree = etree.parse(xml)
         root = pipeline_tree.xpath("/pipelines")
 
+        self.__description__ = xml
         self.__thread__ = None
         self.__stopthread__ = False
         self.__dic__ = root[0].find("dic").get("file")
@@ -44,7 +45,7 @@ class Pipeline(Selector, DbusPipeline):
         self.__thread__ = threading.Thread(target=self.__updateactivatedlm__)
         self.__thread__.start()
         self.__pipeline__.set_state(gst.STATE_PLAYING)
-        self.dbus_pipeline_play()
+        self.dbus_pipeline_play(True)
         self.__loop__.run()
 
     def __updateactivatedlm__(self):
@@ -74,6 +75,10 @@ class Pipeline(Selector, DbusPipeline):
     def __stop__(self):
         self.__stopthread__ = True
         self.__pipeline__.set_state(gst.STATE_NULL)
+        self.dbus_pipeline_play(False)
+
+    def __getdescription__(self):
+        return self.__description__
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:

@@ -14,25 +14,15 @@ class DbusPipeline(DbusSessionPlugin):
 
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
                          signature='')
-    def dbus_pipeline_restart(self):
-        self.__logger__.info("dbus: Request to restart the pipeline")
-
-    @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
-                         signature='')
-    def dbus_pipeline_stop(self):
-        self.__logger__.info("dbus: Request to stop the pipeline")
-
-    @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
-                         signature='')
     def dbus_pipeline_pause(self):
         self.__playing__ = False
         self.__logger__.info("dbus: Request to pause the pipeline")
 
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
-                         signature='')
-    def dbus_pipeline_play(self):
-        self.__playing__ = True
-        self.__logger__.info("dbus: Request to put the pipeline ine play")
+                         signature='b')
+    def dbus_pipeline_play(self, status):
+        self.__playing__ = status
+        self.__logger__.info("dbus: Request to put the pipeline in play")
 
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
                          signature='ss')
@@ -53,6 +43,19 @@ class DbusPipeline(DbusSessionPlugin):
     @dbus.service.method(dbus_interface='org.freedesktop.Voxgenerator',
                         in_signature='', out_signature='b')
     def dbus_pipeline_request_stop(self):
-        self.dbus_pipeline_stop()
         self.__loop__.quit()
-        self.__stop__()
+        try:
+            self.__stop__()
+        except:
+            self.__logger__.critical("You overwrite method __stop__")
+
+    @dbus.service.method(dbus_interface='org.freedesktop.Voxgenerator',
+                        in_signature='', out_signature='s')
+    def dbus_pipeline_request_description(self):
+        return self.__getdescription__()
+
+    def __getdescription__(self):
+        raise NotImplementedError('subclasses must override !')
+
+    def __stop__(self):
+         raise NotImplementedError('subclasses must override !')

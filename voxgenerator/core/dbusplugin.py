@@ -23,7 +23,7 @@ class DbusPlugin(DbusSessionPlugin):
         self.dbus_plugin_registration(self.__name__)
 
     @dbus.service.signal(dbus_interface='org.freedesktop.Voxgenerator',
-                         signature='')
+                         signature='s')
     def dbus_plugin_registration(self, name):
         self.__logger__.info("Registering: " + self.__dbus_path__ + "/" + name)
 
