@@ -4,6 +4,7 @@
 from icontroller import IController
 from Tkinter import *
 import tkFileDialog
+import tkMessageBox
 
 class View(Tk):
     def __init__(self, ictrl, parent):
@@ -80,3 +81,6 @@ class View(Tk):
 
     def set_description(self, d):
         self.__pipelinedescription__.set(d)
+
+    def show_error(self, error):
+        tkMessageBox.showerror("Error", error)

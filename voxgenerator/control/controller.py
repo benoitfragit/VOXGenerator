@@ -78,6 +78,7 @@ class Controller(IController):
             if self.__description__ is not None and os.path.isfile(self.__description__):
                 os.system("run_voxgenerator " + self.__description__ + " &")
             else:
+                self.__view__.show_error("Before trying to start the pipeline, you should choose a valid pipeline xml file!")
                 self.__view__.set_pipeline_status(False)
 
 
